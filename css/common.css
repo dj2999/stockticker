@@ -1,27 +1,587 @@
-.stocks {
-    width:35%;
-    float:left;
+* {
+    box-sizing: border-box;
 }
-.stockNode {
-    margin:5px 0;
-    width:50%;
-    float:left;
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    color: #f5f0df;
+    background:
+        radial-gradient(circle at top, #264a60 0%, #112433 45%, #08111a 100%);
 }
-.stockNode * {
-    margin:0 0 ;
-    padding:2px 0;
+
+#game {
+    --market-card-height: 250px;
+    max-width: 896px;
+    margin: 0 auto;
+    padding: 19px 19px 45px;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+}
+
+h1 {
+    margin-bottom: 8px;
+    font-size: clamp(1.6rem, 3.2vw, 2.56rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+h2 {
+    margin-bottom: 14px;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #f9d77c;
+}
+
+.topBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.topBar h1 {
+    margin-bottom: 0;
+}
+
+.statusBar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 0;
+    justify-content: flex-end;
+}
+
+.cash,
+.netWorth {
+    margin: 0;
+    display: inline-block;
+    padding: 8px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    font-size: 0.96rem;
+    font-weight: bold;
 }
 
 .cash {
-    padding-top:30px;
-    font-size:1.4em;
-    font-weight:bold;
+    background: rgba(5, 12, 18, 0.28);
+    color: #8ff5a7;
+}
 
+.netWorth {
+    background: rgba(40, 26, 7, 0.32);
+    color: #f9d77c;
 }
-.cash, .price {
-    color:#090;
+
+.trendHistory {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+    height: var(--market-card-height);
+    padding: 12px 14px 10px;
+    border: 2px solid rgba(249, 215, 124, 0.4);
+    border-radius: 18px;
+    background:
+        linear-gradient(180deg, rgba(255, 247, 220, 0.08), rgba(255, 247, 220, 0.02)),
+        linear-gradient(135deg, rgba(37, 47, 59, 0.96), rgba(13, 21, 30, 0.98));
+    box-shadow:
+        0 19px 32px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    overflow: hidden;
 }
+
+.marketSidebar {
+    flex: 0 0 272px;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    margin-top: 30px;
+}
+
+.trendHistoryHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 13px;
+    margin-bottom: 6px;
+}
+
+.trendHistoryHeader h2 {
+    margin-bottom: 0;
+}
+
+.trendHistoryAmount {
+    color: #f9d77c;
+    font-size: 1.08rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.cashTrendHistory {
+    border-color: rgba(143, 245, 167, 0.38);
+    background:
+        linear-gradient(180deg, rgba(226, 255, 232, 0.08), rgba(226, 255, 232, 0.02)),
+        linear-gradient(135deg, rgba(20, 44, 42, 0.96), rgba(7, 18, 20, 0.98));
+}
+
+.cashTrendHistory .trendHistoryAmount {
+    color: #8ff5a7;
+}
+
+.marketLayout {
+    display: flex;
+    gap: 19px;
+    align-items: flex-start;
+}
+
+.stocks {
+    flex: 1 1 66%;
+}
+
+.stockGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(176px, 1fr));
+    gap: 13px;
+}
+
+.stockNode {
+    --stock-accent: rgba(203, 221, 232, 0.45);
+    --stock-shadow: rgba(0, 0, 0, 0.28);
+    --stock-sheen: rgba(255, 255, 255, 0.12);
+    --stock-panel-top: rgba(18, 39, 53, 0.96);
+    --stock-panel-bottom: rgba(10, 19, 28, 0.98);
+    --stock-title: #f7e5a2;
+    --stock-price: #8ff5a7;
+    --stock-value: #f9d77c;
+    display: flex;
+    flex-direction: column;
+    height: var(--market-card-height);
+    padding: 14px;
+    border: 2px solid var(--stock-accent);
+    border-radius: 14px;
+    background:
+        linear-gradient(180deg, var(--stock-sheen), rgba(255, 255, 255, 0.04)),
+        linear-gradient(135deg, var(--stock-panel-top), var(--stock-panel-bottom));
+    box-shadow:
+        0 14px 29px var(--stock-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    position: relative;
+    overflow: hidden;
+}
+
+.stockNode::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 8px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), var(--stock-accent));
+}
+
+.stock {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    gap: 10px;
+}
+
+.stockHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.stock h3 {
+    color: var(--stock-title);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex: 1 1 auto;
+}
+
+.price {
+    color: var(--stock-price);
+    font-size: 1.2rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.stockHistory {
+    padding: 8px 10px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.14);
+}
+
+.historyChart {
+    display: block;
+    width: 100%;
+    height: 46px;
+}
+
+.stockHistory .historyChart {
+    color: var(--stock-price);
+}
+
+.trendChart {
+    flex: 1 1 auto;
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    color: #f9d77c;
+}
+
+.cashTrendChart {
+    color: #8ff5a7;
+}
+
+.trendHistoryBody {
+    flex: 1 1 0;
+    display: flex;
+    align-items: stretch;
+    min-height: 0;
+    margin: 0 -6px -2px;
+}
+
+.historyAxis {
+    stroke: rgba(255, 255, 255, 0.14);
+    stroke-width: 1;
+}
+
+.historyArea {
+    fill: currentColor;
+    opacity: 0.18;
+}
+
+.historyLine {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.historyPoint {
+    fill: currentColor;
+    stroke: rgba(8, 17, 26, 0.85);
+    stroke-width: 1.2;
+}
+
+.share {
+    margin-top: 11px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    color: #dbe4ea;
+    font-size: 0.76rem;
+}
+
+.shareLabel {
+    flex: 1 1 auto;
+}
+
+.shareValue {
+    white-space: nowrap;
+    color: var(--stock-value);
+    font-size: 0.72rem;
+}
+
+.stock-gold {
+    --stock-accent: rgba(247, 197, 72, 0.78);
+    --stock-shadow: rgba(120, 76, 10, 0.4);
+    --stock-sheen: rgba(255, 234, 169, 0.18);
+    --stock-panel-top: rgba(79, 52, 12, 0.96);
+    --stock-panel-bottom: rgba(43, 26, 7, 0.98);
+    --stock-title: #ffe9a8;
+    --stock-price: #ffd35e;
+    --stock-value: #fff2c4;
+}
+
+.stock-silver {
+    --stock-accent: rgba(192, 206, 222, 0.8);
+    --stock-shadow: rgba(40, 56, 78, 0.38);
+    --stock-sheen: rgba(235, 243, 255, 0.18);
+    --stock-panel-top: rgba(53, 69, 89, 0.96);
+    --stock-panel-bottom: rgba(25, 34, 47, 0.98);
+    --stock-title: #eff5fb;
+    --stock-price: #dce8f7;
+    --stock-value: #b8d1ea;
+}
+
+.stock-bonds {
+    --stock-accent: rgba(102, 166, 255, 0.78);
+    --stock-shadow: rgba(15, 45, 96, 0.42);
+    --stock-sheen: rgba(176, 214, 255, 0.17);
+    --stock-panel-top: rgba(19, 53, 120, 0.96);
+    --stock-panel-bottom: rgba(9, 26, 63, 0.98);
+    --stock-title: #d9e9ff;
+    --stock-price: #8ec2ff;
+    --stock-value: #bfdcff;
+}
+
+.stock-oil {
+    --stock-accent: rgba(235, 112, 93, 0.74);
+    --stock-shadow: rgba(68, 17, 12, 0.45);
+    --stock-sheen: rgba(255, 170, 150, 0.14);
+    --stock-panel-top: rgba(49, 22, 21, 0.96);
+    --stock-panel-bottom: rgba(17, 12, 13, 0.98);
+    --stock-title: #ffd7c5;
+    --stock-price: #ff9d7e;
+    --stock-value: #ffd2b0;
+}
+
+.stock-industrials {
+    --stock-accent: rgba(212, 92, 97, 0.8);
+    --stock-shadow: rgba(98, 24, 29, 0.4);
+    --stock-sheen: rgba(255, 170, 173, 0.16);
+    --stock-panel-top: rgba(110, 29, 39, 0.96);
+    --stock-panel-bottom: rgba(51, 15, 21, 0.98);
+    --stock-title: #ffe1df;
+    --stock-price: #ffb5b0;
+    --stock-value: #ffd0a3;
+}
+
+.stock-grain {
+    --stock-accent: rgba(154, 196, 87, 0.8);
+    --stock-shadow: rgba(49, 76, 20, 0.4);
+    --stock-sheen: rgba(213, 238, 149, 0.17);
+    --stock-panel-top: rgba(58, 79, 22, 0.96);
+    --stock-panel-bottom: rgba(24, 38, 10, 0.98);
+    --stock-title: #eef6bf;
+    --stock-price: #cfe77b;
+    --stock-value: #f4e6a0;
+}
+
+button {
+    cursor: pointer;
+    border: 0;
+    border-radius: 999px;
+    padding: 8px 11px;
+    font: inherit;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition:
+        transform 120ms ease,
+        filter 120ms ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+button.buy {
+    background: linear-gradient(135deg, #79f1a4, #0bb78f);
+    color: #08211d;
+}
+
+.buyActions {
+    display: flex;
+    gap: 8px;
+}
+
+.buyActions button,
+.sellActions button {
+    flex: 1 1 0;
+}
+
+.buyTen {
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+}
+
+.sellActions {
+    display: flex;
+    gap: 8px;
+}
+
+button.sell {
+    background: linear-gradient(135deg, #ffd86f, #fc6262);
+    color: #311011;
+}
+
+.sellTen {
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+}
+
 .newsFeed {
-    float:left;
-    width:50%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 10px 14px;
+    border: 2px solid rgba(249, 215, 124, 0.45);
+    border-radius: 16px;
+    background:
+        linear-gradient(180deg, rgba(255, 244, 204, 0.08), rgba(255, 244, 204, 0.03)),
+        linear-gradient(135deg, rgba(27, 43, 58, 0.97), rgba(12, 20, 29, 0.98));
+    box-shadow:
+        0 19px 35px rgba(0, 0, 0, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.newsFeed h2 {
+    margin-bottom: 0;
+    flex: 0 0 auto;
+}
+
+.newsTickerViewport {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.newsTickerTrack {
+    display: flex;
+    align-items: center;
+    min-width: max-content;
+    white-space: nowrap;
+    will-change: transform;
+}
+
+.newsTickerSegment {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    flex: 0 0 auto;
+    padding-right: 2px;
+}
+
+.newsItem {
+    display: inline-flex;
+    align-items: baseline;
+    flex: 0 0 auto;
+    gap: 8px;
+    margin-right: 14px;
+    padding-right: 14px;
+    position: relative;
+    color: rgba(237, 244, 248, 0.9);
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.newsItem::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.28);
+    transform: translateY(-50%);
+}
+
+.newsSymbol {
+    color: rgba(255, 255, 255, 0.74);
+    font-size: 0.68rem;
+    font-weight: bold;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.newsQuote {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    color: #d9e4ec;
+}
+
+.newsPrice,
+.newsChange {
+    font-weight: bold;
+    color: currentColor;
+}
+
+.newsPrice {
+    font-variant-numeric: tabular-nums;
+}
+
+.newsChange {
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.newsItem.isUp .newsQuote {
+    color: #7fc8ff;
+}
+
+.newsItem.isDown .newsQuote {
+    color: #ff8585;
+}
+
+.newsFeedEmpty {
+    color: rgba(237, 244, 248, 0.8);
+    font-size: 0.76rem;
+    white-space: nowrap;
+}
+
+@media (max-width: 920px) {
+    .topBar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .statusBar {
+        justify-content: flex-start;
+    }
+
+    .trendHistoryHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .marketLayout {
+        flex-direction: column;
+    }
+
+    .marketSidebar {
+        width: 100%;
+        flex-basis: auto;
+        margin-top: 0;
+    }
+
+    .newsFeed {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 11px 12px;
+    }
+
+    .newsFeed h2 {
+        width: 100%;
+    }
+
+    .newsTickerViewport {
+        width: 100%;
+    }
+}
+
+@media (max-width: 560px) {
+    #game {
+        padding: 14px 13px 32px;
+    }
+
+    .stockGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .stockNode,
+    .newsFeed {
+        padding: 14px 13px;
+    }
 }
