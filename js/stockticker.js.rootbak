@@ -1,5 +1,4 @@
 var stockMarket = {
-    stockHistoryLimit : 300,
     portfolioHistoryLimit : 300,
 
     stocks : [],
@@ -54,7 +53,7 @@ var stockMarket = {
         for (var i = 0; i < this.stocks.length; i++) {
             this.stocks[i].history.push(this.stocks[i].price);
 
-            if (this.stocks[i].history.length > this.stockHistoryLimit) {
+            if (this.stocks[i].history.length > 100) {
                 this.stocks[i].history.shift();
             }
         }

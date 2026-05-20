@@ -35,31 +35,6 @@ function formatCurrencyValue(value) {
     return "$" + value.toLocaleString("en-US");
 }
 
-function formatElapsedTime(totalSeconds) {
-    if (typeof totalSeconds !== "number" || totalSeconds < 0) {
-        return "0M 0S";
-    }
-
-    var days = Math.floor(totalSeconds / 86400);
-    var hours = Math.floor((totalSeconds % 86400) / 3600);
-    var minutes = Math.floor((totalSeconds % 3600) / 60);
-    var seconds = totalSeconds % 60;
-    var parts = [];
-
-    if (days > 0) {
-        parts.push(days + "D");
-    }
-
-    if (hours > 0) {
-        parts.push(hours + "H");
-    }
-
-    parts.push(minutes + "M");
-    parts.push(seconds + "S");
-
-    return parts.join(" ");
-}
-
 function getTickerItems(data) {
     return data.map(function(item, index) {
         var stockName = item.stockName || null;
@@ -105,13 +80,11 @@ var Stock = React.createClass({
                 <StockHistory history={this.props.history} />
                 <div className="buyActions">
                     <button data-stock={this.props.name} data-quantity="1" className="buy" onClick={this.handleBuy}>Buy</button>
-                    <button data-stock={this.props.name} data-quantity="10" className="buy tradeQuantity" onClick={this.handleBuy}>10</button>
-                    <button data-stock={this.props.name} data-quantity="100" className="buy tradeQuantity" onClick={this.handleBuy}>100</button>
+                    <button data-stock={this.props.name} data-quantity="10" className="buy buyTen" onClick={this.handleBuy}>Buy 10</button>
                 </div>
                 <div className="sellActions">
                     <button data-stock={this.props.name} data-quantity="1" className="sell" onClick={this.handleSell}>Sell</button>
-                    <button data-stock={this.props.name} data-quantity="10" className="sell tradeQuantity" onClick={this.handleSell}>10</button>
-                    <button data-stock={this.props.name} data-quantity="100" className="sell tradeQuantity" onClick={this.handleSell}>100</button>
+                    <button data-stock={this.props.name} data-quantity="10" className="sell sellTen" onClick={this.handleSell}>Sell 10</button>
                 </div>
             </article>
 
@@ -180,7 +153,7 @@ var StockHistory = React.createClass({
     render: function() {
         return (
             <div className="stockHistory">
-                <HistoryChart history={this.props.history} limit={300} />
+                <HistoryChart history={this.props.history} />
             </div>
         );
     }
@@ -435,7 +408,6 @@ var Cash = React.createClass({
     render: function() {
         return (
             <div className="statusBar">
-                <p className="timer">{formatElapsedTime(this.props.elapsedSeconds)}</p>
                 <p className="cash">Cash: {formatCurrencyValue(this.props.amount)}</p>
                 <p className="netWorth">Net Worth: {formatCurrencyValue(this.props.netWorth)}</p>
             </div>
@@ -460,8 +432,7 @@ var StockView = React.createClass({
             cash: stockMarket.cash,
             cashHistory: stockMarket.cashHistory.slice(),
             newsFeed: stockMarket.newsFeed.slice(),
-            netWorthHistory: stockMarket.netWorthHistory.slice(),
-            startedAt: Date.now()
+            netWorthHistory: stockMarket.netWorthHistory.slice()
         }
     },
 
@@ -504,7 +475,6 @@ var StockView = React.createClass({
 
     render : function () {
         var portfolioValue = 0;
-        var elapsedSeconds = Math.floor((Date.now() - this.state.startedAt) / 1000);
 
         this.state.data.forEach(function(stock) {
             portfolioValue += stock.shares * stock.price;
@@ -529,7 +499,7 @@ var StockView = React.createClass({
             <div id="game">
             <div className="topBar">
                 <h1>Stock Ticker</h1>
-                <Cash amount={this.state.cash} netWorth={netWorth} elapsedSeconds={elapsedSeconds} />
+                <Cash amount={this.state.cash} netWorth={netWorth} />
             </div>
 
             <NewsFeed data={this.state.newsFeed} />
